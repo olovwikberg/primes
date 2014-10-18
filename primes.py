@@ -1,5 +1,3 @@
-#!/Users/olov/Envs/primes/bin/python
-
 import math
 from datetime import datetime
 
