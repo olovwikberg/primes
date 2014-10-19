@@ -84,6 +84,14 @@ def darkAndBlue():
     primeColor=(color[2], color[1], color[0])
     return color, backgroundColor, primeColor
 
+def bluePrint():
+    color=(124, 145, 192)
+    # backgroundColor=(44, 61, 117)
+    backgroundColor=(1, 42, 122)
+    # edgeColor=interpolateColor(color, backgroundColor, 0.3)
+    primeColor=(color[2], color[1], color[0])
+    return color, backgroundColor, primeColor
+
 def drawOutlinedText(draw=None, pos=None, text=None, fill=None, outline=None):
     draw.text((pos[0]-1, pos[1]-1), text, fill=outline)
     draw.text((pos[0]-0, pos[1]-1), text, fill=outline)
@@ -181,6 +189,9 @@ def calculateDotImage(
                 (scale_len_factors-4) / max_scale_len_factors
                 , 0), 2)
 
+            # If you want to dim not that much
+            # k = (k + 1) / 2
+
             if isPrime:
                 dimmedPrimeColor=interpolateColor(backgroundColor=backgroundColor, color=primeColor, k=k)
             else:
@@ -258,6 +269,9 @@ if __name__=='__main__':
 
     # The original
     image = calculateDotImage(size=size)
+
+    # blue print colors
+    # image = calculateDotImage(size=size, colorSet=bluePrint(), doDimColors=True)
 
     # Dimming colors
     # image = calculateDotImage(size=size, doDimColors=True)
