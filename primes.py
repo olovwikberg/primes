@@ -58,9 +58,9 @@ def coordinate_square(n):
 
 def interpolateColor(backgroundColor=(0,0,0), color=(255,255,255), k=0.5):
     return (
-        int(backgroundColor[0] + k * (color[0] - backgroundColor[0])),
-        int(backgroundColor[1] + k * (color[1] - backgroundColor[1])),
-        int(backgroundColor[2] + k * (color[2] - backgroundColor[2]))
+        int(min(max(backgroundColor[0] + k * (color[0] - backgroundColor[0]), 0), 255)),
+        int(min(max(backgroundColor[1] + k * (color[1] - backgroundColor[1]), 0), 255)),
+        int(min(max(backgroundColor[2] + k * (color[2] - backgroundColor[2]), 0), 255))
         )
 
 def dimColor(color=(255, 255, 255), k=0.5):
@@ -137,7 +137,13 @@ def calculateDotImage(
     center = (size[0] / 2, size[1] / 2)
     draw = ImageDraw.Draw(image)
     draw.rectangle((0, 0) + size, fill=backgroundColor)
-    n_max = int(0.9 * max(size[0], size[1]) * max(size[0], size[1]) / (scale * scale * spacing * spacing))
+
+    if coordinate_function == coordinate_square:
+        margin = 1.05
+    else:
+        margin = 0.9
+
+    n_max = int(margin * max(size[0], size[1]) * max(size[0], size[1]) / (scale * scale * spacing * spacing))
 
     # draw one centimeter red line in center (at 300 ppi)
     # draw.line((center[0], center[1], center[0]+int(300/2.54), center[1]), fill=255)
@@ -169,11 +175,11 @@ def calculateDotImage(
 
 
         if doDimColors:
-            max_len_factors = 40
+            max_len_factors = 20
             max_scale_len_factors = scale * math.sqrt(max_len_factors-2)
             k = min(max(
                 (scale_len_factors-4) / max_scale_len_factors
-                , 0), 1)
+                , 0), 2)
 
             if isPrime:
                 dimmedPrimeColor=interpolateColor(backgroundColor=backgroundColor, color=primeColor, k=k)
@@ -224,42 +230,7 @@ def calculateDotImage(
 
     return image
 
-if __name__=='__main__':
-    # size=(2000, 1000)
-    # size=(2000, 2000)
-    size=(8268, 5906)
-    # size=(8268, 8268)
-
-    image = calculateDotImage(size=size)
-    # image = calculateDotImage(size=size, colorSet=oldNewsPaperColors(), doDimColors=True)
-
-    # image = calculateDotImage(
-    #     size=size,
-
-    #     # scale=12,
-    #     scale=7,
-
-    #     spacing=3,
-
-    #     colorSet=darkAndBlue(),
-    #     # colorSet=oldNewsPaperColors()
-
-    #     # coordinate_function=coordinate_square, 
-    #     coordinate_function=coordinate_archimedes, 
-
-    #     withCircles=True, 
-
-    #     fillPrimes=True,
-    #     fillNonPrimes=True,
-
-    #     labelPrimes=False, 
-    #     labelNonPrimes=False, 
-
-    #     doMarkPrimes=False
-    #     )
-
-    image.show()
-
+def saveImage(image):
     doneSaving = False
     while not doneSaving:
         try:
@@ -275,3 +246,69 @@ if __name__=='__main__':
         except:
             pass
     print "Done!"
+
+
+
+
+
+if __name__=='__main__':
+    # size=(2000, 1000)
+    # size=(2000, 2000)
+    size=(8268, 5906)
+
+    # The original
+    image = calculateDotImage(size=size)
+
+    # Dimming colors
+    # image = calculateDotImage(size=size, doDimColors=True)
+
+    # Dimming colors
+    # image = calculateDotImage(size=size, doDimColors=True, coordinate_function=coordinate_square, scale=12, spacing=5)
+
+    # Dimming colors and other colors
+    # image = calculateDotImage(size=size, colorSet=oldNewsPaperColors(), doDimColors=True)
+
+    # # More spacing and labeled numbers, primes filled
+    # image = calculateDotImage(
+    #     size=size,
+    #     scale=12,
+    #     spacing=3,
+    #     # coordinate_function=coordinate_square, 
+    #     coordinate_function=coordinate_archimedes, 
+    #     withCircles=True,
+    #     fillPrimes=True,
+    #     fillNonPrimes=False,
+    #     labelPrimes=True, 
+    #     labelNonPrimes=True,
+    #     doMarkPrimes=False
+    #     )
+
+    # image = calculateDotImage(
+    #     size=size,
+
+    #     scale=12,
+    #     # scale=7,
+
+    #     spacing=3,
+
+    #     colorSet=darkAndBlue(),
+    #     # colorSet=oldNewsPaperColors()
+
+    #     # coordinate_function=coordinate_square, 
+    #     coordinate_function=coordinate_archimedes, 
+
+    #     withCircles=True, 
+
+    #     fillPrimes=True,
+    #     fillNonPrimes=False,
+
+    #     labelPrimes=True, 
+    #     labelNonPrimes=True, 
+
+    #     doMarkPrimes=False
+    #     )
+
+
+    image.show()
+
+    saveImage(image)
